@@ -24,6 +24,7 @@ android {
         debug {
             debuggable true
             buildConfigField "String", "SHARED_PREFS_KEY", CONFIG("SHARED_PREFS_MASTER_KEY")
+            buildConfigField "String", "TELEGRAM_API_URL", CONFIG("TELEGRAM_API_URL")
         }
         release {
             debuggable false

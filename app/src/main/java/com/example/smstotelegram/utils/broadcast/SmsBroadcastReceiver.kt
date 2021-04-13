@@ -11,8 +11,6 @@ import com.example.smstotelegram.data.vo.Resource
 import com.example.smstotelegram.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,14 +25,13 @@ class SmsBroadcastReceiver :
     @Inject
     lateinit var smsRepository: SmsRepository
 
-    private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+    @Inject
+    lateinit var mainScope: CoroutineScope
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("SmsBroadcastReceiver", intent.toString())
-
         if ( intent.action == Constants.PROVIDER_SMS_RECEIVED) {
             PduSmsMapper(smsBundle = intent.extras).parse()?.let { smsList ->
-                scope.launch {
+                mainScope.launch {
                     smsRepository
                         .sendMessage(sms = smsList.first())
                         .collect { sendMessageResponse ->

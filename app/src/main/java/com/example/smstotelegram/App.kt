@@ -8,8 +8,4 @@ import dagger.hilt.android.HiltAndroidApp
  * Created by Cuneyt AYYILDIZ on 4/11/2021.
  */
 @HiltAndroidApp
-class App: Application() {
-    override fun onCreate() {
-        super.onCreate()
-    }
-}
+class App: Application()

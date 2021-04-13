@@ -1,68 +1,28 @@
 package com.example.smstotelegram.utils.service
 
-import android.app.*
+import android.app.Service
 import android.content.Intent
-import android.os.Build
 import android.os.IBinder
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import com.example.smstotelegram.R
-import com.example.smstotelegram.ui.MainActivity
-import com.example.smstotelegram.utils.extensions.notificationService
+import com.example.smstotelegram.utils.ServiceNotificationManager
 
 
 /**
  * Created by Cuneyt AYYILDIZ on 4/11/2021.
  */
+
+private const val ONGOING_NOTIFICATION_ID = 123123
+
 class ForegroundService : Service() {
 
-    private val ONGOING_NOTIFICATION_ID = 123123
+    private var notificationManager: ServiceNotificationManager? = null
 
     override fun onCreate() {
         super.onCreate()
-        val notificationChannelId = getString(R.string.notification_channel_id)
-        val notificationChannelName = getString(R.string.notification_channel_name)
+        notificationManager = ServiceNotificationManager(context = this)
 
-        val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
-            applicationContext,
-            notificationChannelId
-        ).apply {
-            setSmallIcon(R.mipmap.ic_launcher)
-            setContentText(getString(R.string.notification_content_text))
-            setContentIntent(createPendingIntent())
-
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                    val notificationChannel =
-                        createNotificationChannel(notificationChannelId, notificationChannelName)
-                    notificationService.createNotificationChannel(notificationChannel)
-                }
-            }
+        notificationManager?.buildNotification()?.let { notification ->
+            startForeground(ONGOING_NOTIFICATION_ID, notification)
         }
-        val notification = notificationBuilder.build()
-
-        startForeground(ONGOING_NOTIFICATION_ID, notification)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(
-        notificationChannelId: String,
-        notificationChannelName: String
-    ): NotificationChannel {
-        return NotificationChannel(
-            notificationChannelId,
-            notificationChannelName,
-            NotificationManager.IMPORTANCE_MIN
-        ).apply {
-            enableLights(false)
-            setShowBadge(false)
-            lockscreenVisibility = Notification.VISIBILITY_SECRET
-        }
-    }
-
-    private fun createPendingIntent(): PendingIntent {
-        val intent = Intent(this, MainActivity::class.java)
-        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -71,7 +31,7 @@ class ForegroundService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        notificationManager = null
         startService(Intent(this, ForegroundService::class.java))
     }
 }

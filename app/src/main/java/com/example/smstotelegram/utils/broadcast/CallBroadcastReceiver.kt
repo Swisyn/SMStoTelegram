@@ -11,8 +11,6 @@ import com.example.smstotelegram.data.remote.model.SendMessageResponse
 import com.example.smstotelegram.data.vo.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,13 +26,14 @@ class CallBroadcastReceiver :
     @Inject
     lateinit var callRepository: CallRepository
 
-    private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+    @Inject
+    lateinit var mainScope: CoroutineScope
 
     private var state = 0
+
     private var number = ""
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("CallBroadcastReceiver", intent.toString())
 
         if (intent.action == Intent.ACTION_NEW_OUTGOING_CALL) {
             number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER).orEmpty()
@@ -64,7 +63,7 @@ class CallBroadcastReceiver :
                 else -> "unknown"
             }
 
-            scope.launch {
+            mainScope.launch {
                 callRepository
                     .sendPhoneCallLog(textMessage = callState)
                     .collect {
