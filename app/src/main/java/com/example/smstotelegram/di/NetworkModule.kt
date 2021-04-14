@@ -1,10 +1,14 @@
 package com.example.smstotelegram.di
 
+import android.content.Context
 import com.example.smstotelegram.BuildConfig
 import com.example.smstotelegram.data.remote.TelegramApi
+import com.example.smstotelegram.di.annotations.ConnectionStatus
+import com.example.smstotelegram.utils.ConnectionManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,6 +26,14 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
+
+
+    @ConnectionStatus
+    @Provides
+    @Singleton
+    fun providesConnectionStatus(@ApplicationContext context: Context): ConnectionManager{
+        return ConnectionManager(context = context)
+    }
 
     @Provides
     @Singleton

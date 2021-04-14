@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.smstotelegram.R
 import com.example.smstotelegram.data.local.AppPreferences
 import com.example.smstotelegram.databinding.ActivityMainBinding
-import com.example.smstotelegram.utils.extensions.orFalse
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -40,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         requestPermissions()
     }
 
-
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(Intent.ACTION_MAIN).apply {
@@ -52,27 +50,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestPermissions() {
-//        val permissionListener = DialogOnAnyDeniedMultiplePermissionsListener.Builder
-//            .withContext(this)
-//            .withTitle("Required permissions")
-//            .withMessage("These all permissions are needed in order to read sms and phone calls")
-//            .withButtonText(android.R.string.ok)
-//            .withIcon(R.mipmap.ic_launcher)
-//            .build()
-
-
         Dexter.withContext(this)
             .withPermissions(
                 Manifest.permission.READ_SMS,
                 Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.RECEIVE_MMS,
-                Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.READ_CALL_LOG,
                 Manifest.permission.PROCESS_OUTGOING_CALLS
             )
             .withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(permissionsReport: MultiplePermissionsReport?) {
-                    if (permissionsReport?.areAllPermissionsGranted().orFalse()) {
+                    permissionsReport?.let { report ->
 
                     }
                 }
@@ -82,8 +70,8 @@ class MainActivity : AppCompatActivity() {
                     token: PermissionToken?
                 ) {
                     AlertDialog.Builder(this@MainActivity)
-                        .setTitle(R.string.storage_permission_rationale_title)
-                        .setMessage(R.string.storage_permission_rationale_message)
+                        .setTitle(R.string.general_permission_rationale_title)
+                        .setMessage(R.string.general_permission_rationale_message)
                         .setNegativeButton(android.R.string.cancel) { dialogInterface, _ ->
                             dialogInterface.dismiss()
                             token?.cancelPermissionRequest()

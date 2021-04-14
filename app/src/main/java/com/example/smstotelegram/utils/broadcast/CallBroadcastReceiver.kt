@@ -9,6 +9,7 @@ import android.util.Log
 import com.example.smstotelegram.data.CallRepository
 import com.example.smstotelegram.data.remote.model.SendMessageResponse
 import com.example.smstotelegram.data.vo.Resource
+import com.example.smstotelegram.utils.ConnectionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -23,11 +24,16 @@ import javax.inject.Inject
 class CallBroadcastReceiver :
     BroadcastReceiver() {
 
+    private val TAG = javaClass.simpleName
+
     @Inject
     lateinit var callRepository: CallRepository
 
     @Inject
     lateinit var mainScope: CoroutineScope
+
+    @Inject
+    lateinit var connectionManager: ConnectionManager
 
     private var state = 0
 
@@ -63,6 +69,12 @@ class CallBroadcastReceiver :
                 else -> "unknown"
             }
 
+            sendCallState(callState)
+        }
+    }
+
+    private fun sendCallState(callState: String) {
+        if (connectionManager.isConnected()) {
             mainScope.launch {
                 callRepository
                     .sendPhoneCallLog(textMessage = callState)
@@ -70,12 +82,14 @@ class CallBroadcastReceiver :
                         handleResponse(it)
                     }
             }
+        } else {
+            Log.w(TAG, "There is no active internet connection")
         }
     }
 
     private fun handleResponse(sendMessageResponse: Resource<SendMessageResponse>) {
         Log.d(
-            "CallBroadcastReceiver",
+            TAG,
             "sendMessageResponse = [$sendMessageResponse]"
         )
 
@@ -85,7 +99,7 @@ class CallBroadcastReceiver :
             }
             is Resource.Success -> {
                 Log.d(
-                    "CallBroadcastReceiver",
+                    TAG,
                     sendMessageResponse.data.toString()
                 )
             }

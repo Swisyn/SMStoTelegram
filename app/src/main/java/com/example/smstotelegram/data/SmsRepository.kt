@@ -4,10 +4,13 @@ import android.telephony.PhoneNumberUtils
 import android.telephony.SmsMessage
 import com.example.smstotelegram.data.local.AppPreferences
 import com.example.smstotelegram.data.remote.TelegramApi
+import com.example.smstotelegram.data.remote.base.RemoteDataSource
 import com.example.smstotelegram.data.remote.model.SendMessageRequest
 import com.example.smstotelegram.data.remote.model.SendMessageResponse
 import com.example.smstotelegram.data.vo.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
@@ -25,24 +28,40 @@ class SmsRepositoryImpl @Inject constructor(
 ) : SmsRepository, RemoteDataSource() {
 
     override suspend fun sendMessage(sms: SmsMessage): Flow<Resource<SendMessageResponse>> {
-        val botToken: String = appPreferences.getToken()
-        val chatId: String = appPreferences.getChatId()
+        return flow {
+            val botToken: String = appPreferences.getToken()
+            val chatId: String = appPreferences.getChatId()
 
-        return sendTelegramMessage(botToken = botToken, chatId = chatId) {
-            val textMessage = createTextMessageFromSms(sms)
-            val sendMessageRequest = SendMessageRequest(chatId = chatId, text = textMessage)
+            if (botToken.isNotEmpty() && chatId.isNotEmpty()) {
+                val textMessage = createTextMessageFromSms(sms)
 
-            telegramApi.sendMessage(
-                token = botToken,
-                sendMessageRequest = sendMessageRequest
-            )
+                val apiResponse = createApiCall {
+                    val sendMessageRequest = SendMessageRequest(chatId = chatId, text = textMessage)
+
+                    telegramApi.sendMessage(
+                        token = botToken,
+                        sendMessageRequest = sendMessageRequest
+                    )
+                }
+                emitAll(apiResponse)
+            } else {
+                emit(
+                    Resource.Failure(
+                        exception = Exception("botToken or chatId was empty!")
+                    )
+                )
+            }
         }
     }
 
     private fun createTextMessageFromSms(sms: SmsMessage): String {
         return StringBuilder().apply {
-            append("From: ").append(PhoneNumberUtils.formatNumber(sms.displayOriginatingAddress)).appendLine()
-            append("Message: ").append(sms.displayMessageBody)
+            append("From: ")
+                .append(PhoneNumberUtils.formatNumber(sms.displayOriginatingAddress))
+                .appendLine()
+            append("Message: ")
+                .appendLine()
+                .append(sms.displayMessageBody)
         }.toString()
     }
 }

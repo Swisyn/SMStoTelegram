@@ -18,4 +18,5 @@ interface TelegramApi {
         @Path("token") token: String,
         @Body sendMessageRequest: SendMessageRequest
     ): Response<SendMessageResponse>
+
 }
