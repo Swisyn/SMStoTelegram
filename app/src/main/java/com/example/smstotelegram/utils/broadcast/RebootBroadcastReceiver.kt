@@ -13,8 +13,8 @@ import com.example.smstotelegram.utils.service.ForegroundService
 class RebootBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Constants.ACTION_BOOT_COMPLETED) {
-
             val frontServiceIntent = Intent(context, ForegroundService::class.java)
+
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
                     context.startForegroundService(frontServiceIntent)

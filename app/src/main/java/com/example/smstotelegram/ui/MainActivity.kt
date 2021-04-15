@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.smstotelegram.R
 import com.example.smstotelegram.data.local.AppPreferences
 import com.example.smstotelegram.databinding.ActivityMainBinding
+import com.example.smstotelegram.ui.into.IntroActivity
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -27,13 +28,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!appPreferences.isIntroShown()) {
+            startActivity(Intent(this, IntroActivity::class.java))
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
         binding.buttonSaveSettings.setOnClickListener {
             appPreferences.setChatId(chatId = binding.editTextChatId.text.toString())
-            appPreferences.setToken(token = binding.editTextBotId.text.toString())
+            appPreferences.setTokenId(token = binding.editTextBotId.text.toString())
         }
 
         requestPermissions()

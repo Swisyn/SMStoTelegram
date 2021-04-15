@@ -9,6 +9,7 @@ import android.util.Log
 import com.example.smstotelegram.data.CallRepository
 import com.example.smstotelegram.data.remote.model.SendMessageResponse
 import com.example.smstotelegram.data.vo.Resource
+import com.example.smstotelegram.di.annotations.MainDispatcher
 import com.example.smstotelegram.utils.ConnectionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,7 @@ class CallBroadcastReceiver :
     lateinit var callRepository: CallRepository
 
     @Inject
+    @MainDispatcher
     lateinit var mainScope: CoroutineScope
 
     @Inject

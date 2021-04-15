@@ -2,7 +2,7 @@ package com.example.smstotelegram.data
 
 import com.example.smstotelegram.data.local.AppPreferences
 import com.example.smstotelegram.data.remote.TelegramApi
-import com.example.smstotelegram.data.remote.base.RemoteDataSource
+import com.example.smstotelegram.data.remote.base.createApiCall
 import com.example.smstotelegram.data.remote.model.SendMessageRequest
 import com.example.smstotelegram.data.remote.model.SendMessageResponse
 import com.example.smstotelegram.data.vo.Resource
@@ -24,19 +24,18 @@ interface CallRepository {
 class CallRepositoryImpl @Inject constructor(
     private val telegramApi: TelegramApi,
     private val appPreferences: AppPreferences
-) : CallRepository, RemoteDataSource() {
-
+) : CallRepository {
     override suspend fun sendPhoneCallLog(textMessage: String): Flow<Resource<SendMessageResponse>> {
         return flow {
-            val botToken: String = appPreferences.getToken()
+            val tokenId: String = appPreferences.getTokenId()
             val chatId: String = appPreferences.getChatId()
 
-            if (botToken.isNotEmpty() && chatId.isNotEmpty()) {
+            if (tokenId.isNotEmpty() && chatId.isNotEmpty()) {
                 val apiResponse = createApiCall {
                     val sendMessageRequest = SendMessageRequest(chatId = chatId, text = textMessage)
 
                     telegramApi.sendMessage(
-                        token = botToken,
+                        token = tokenId,
                         sendMessageRequest = sendMessageRequest
                     )
                 }

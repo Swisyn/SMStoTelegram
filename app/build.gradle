@@ -40,8 +40,8 @@ android {
         jvmTarget = '1.8'
     }
 
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -55,6 +55,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2"
+
+    implementation 'com.cuneytayyildiz:onboarder:2.0.0'
 
     implementation 'com.karumi:dexter:6.2.2'
 
