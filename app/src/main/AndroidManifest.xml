@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-            android:name=".ui.into.IntroActivity"
+            android:name=".ui.intro.IntroActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
 
         <receiver

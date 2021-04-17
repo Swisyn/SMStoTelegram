@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.cuneytayyildiz.smstotelegram.data.local.AppPreferences
-import com.cuneytayyildiz.smstotelegram.ui.into.IntroActivity
+import com.cuneytayyildiz.smstotelegram.ui.intro.IntroActivity
 import com.cuneytayyildiz.smstotelegram.ui.preferences.PreferencesFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

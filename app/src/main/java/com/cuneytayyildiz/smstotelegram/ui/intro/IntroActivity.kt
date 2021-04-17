@@ -1,4 +1,4 @@
-package com.cuneytayyildiz.smstotelegram.ui.into
+package com.cuneytayyildiz.smstotelegram.ui.intro
 
 import android.os.Bundle
 import android.view.View
