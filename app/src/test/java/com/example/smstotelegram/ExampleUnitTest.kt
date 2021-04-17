@@ -1,4 +1,4 @@
-package com.example.smstotelegram
+package com.cuneytayyildiz.smstotelegram
 
 import org.junit.Test
 

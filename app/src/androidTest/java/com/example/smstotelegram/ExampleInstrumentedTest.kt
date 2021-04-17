@@ -1,4 +1,4 @@
-package com.example.smstotelegram
+package com.cuneytayyildiz.smstotelegram
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.smstotelegram", appContext.packageName)
+        assertEquals("com.cuneytayyildiz.smstotelegram", appContext.packageName)
     }
 }
