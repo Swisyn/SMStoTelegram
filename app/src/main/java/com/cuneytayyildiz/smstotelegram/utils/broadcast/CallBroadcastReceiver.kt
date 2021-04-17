@@ -42,7 +42,6 @@ class CallBroadcastReceiver :
     private var number = ""
 
     override fun onReceive(context: Context, intent: Intent) {
-
         if (intent.action == Intent.ACTION_NEW_OUTGOING_CALL) {
             number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER).orEmpty()
         } else {
@@ -85,20 +84,12 @@ class CallBroadcastReceiver :
                     }
             }
         } else {
-            Log.w(TAG, "There is no active internet connection")
+            Log.w(TAG, "There is no active internet connection!")
         }
     }
 
     private fun handleResponse(sendMessageResponse: Resource<SendMessageResponse>) {
-        Log.d(
-            TAG,
-            "sendMessageResponse = [$sendMessageResponse]"
-        )
-
         when (sendMessageResponse) {
-            is Resource.Loading -> {
-
-            }
             is Resource.Success -> {
                 Log.d(
                     TAG,
@@ -106,7 +97,7 @@ class CallBroadcastReceiver :
                 )
             }
             is Resource.Failure -> {
-
+                sendMessageResponse.exception.printStackTrace()
             }
         }
     }

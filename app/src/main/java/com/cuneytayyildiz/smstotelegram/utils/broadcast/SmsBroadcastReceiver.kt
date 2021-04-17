@@ -11,8 +11,8 @@ import com.cuneytayyildiz.smstotelegram.data.model.Sms
 import com.cuneytayyildiz.smstotelegram.data.remote.model.SendMessageResponse
 import com.cuneytayyildiz.smstotelegram.data.vo.Resource
 import com.cuneytayyildiz.smstotelegram.di.annotations.MainDispatcher
-import com.cuneytayyildiz.smstotelegram.utils.managers.ConnectionManager
 import com.cuneytayyildiz.smstotelegram.utils.Constants
+import com.cuneytayyildiz.smstotelegram.utils.managers.ConnectionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -74,20 +74,12 @@ class SmsBroadcastReceiver :
                     }
             }
         } else {
-            Log.w(TAG, "There is no active internet connection")
+            Log.w(TAG, "There is no active internet connection!")
         }
     }
 
     private fun handleResponse(sendMessageResponse: Resource<SendMessageResponse>) {
-        Log.d(
-            TAG,
-            "sendMessageResponse = [$sendMessageResponse]"
-        )
-
         when (sendMessageResponse) {
-            is Resource.Loading -> {
-
-            }
             is Resource.Success -> {
                 Log.d(
                     TAG,
@@ -95,7 +87,7 @@ class SmsBroadcastReceiver :
                 )
             }
             is Resource.Failure -> {
-
+                sendMessageResponse.exception.printStackTrace()
             }
         }
     }
