@@ -58,6 +58,7 @@ class CallBroadcastReceiver :
     }
 
     private fun onCallStateChanged(state: Int, number: String) {
+        Log.w(TAG, "onCallStateChanged for state = [$state], number = [$number]")
         if (number.isNotEmpty()) {
             val formattedPhoneNumber = PhoneNumberUtils.formatNumber(number)
             val callState = when (state) {

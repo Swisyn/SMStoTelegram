@@ -6,9 +6,11 @@ import com.cuneytayyildiz.smstotelegram.data.remote.base.createApiCall
 import com.cuneytayyildiz.smstotelegram.data.remote.model.SendMessageRequest
 import com.cuneytayyildiz.smstotelegram.data.remote.model.SendMessageResponse
 import com.cuneytayyildiz.smstotelegram.data.vo.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 
@@ -47,6 +49,6 @@ class CallRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 }
