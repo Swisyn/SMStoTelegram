@@ -10,11 +10,11 @@ import com.cuneytayyildiz.smstotelegram.data.mapper.PduSmsMapper
 import com.cuneytayyildiz.smstotelegram.data.model.Sms
 import com.cuneytayyildiz.smstotelegram.data.remote.model.SendMessageResponse
 import com.cuneytayyildiz.smstotelegram.data.vo.Resource
-import com.cuneytayyildiz.smstotelegram.di.annotations.MainDispatcher
 import com.cuneytayyildiz.smstotelegram.utils.Constants
 import com.cuneytayyildiz.smstotelegram.utils.managers.ConnectionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,10 +32,6 @@ class SmsBroadcastReceiver :
     lateinit var smsRepository: SmsRepository
 
     @Inject
-    @MainDispatcher
-    lateinit var mainScope: CoroutineScope
-
-    @Inject
     lateinit var connectionManager: ConnectionManager
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -48,7 +44,7 @@ class SmsBroadcastReceiver :
 
     private fun sendSmsData(smsList: MutableList<SmsMessage>) {
         if (connectionManager.isConnected()) {
-            mainScope.launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 val sms = if (smsList.size == 1) {
                     val receivedSms = smsList.first()
                     Sms(

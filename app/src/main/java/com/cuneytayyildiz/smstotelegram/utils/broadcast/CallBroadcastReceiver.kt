@@ -13,6 +13,7 @@ import com.cuneytayyildiz.smstotelegram.di.annotations.MainDispatcher
 import com.cuneytayyildiz.smstotelegram.utils.managers.ConnectionManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,10 +30,6 @@ class CallBroadcastReceiver :
 
     @Inject
     lateinit var callRepository: CallRepository
-
-    @Inject
-    @MainDispatcher
-    lateinit var mainScope: CoroutineScope
 
     @Inject
     lateinit var connectionManager: ConnectionManager
@@ -77,7 +74,7 @@ class CallBroadcastReceiver :
 
     private fun sendCallState(callState: String) {
         if (connectionManager.isConnected()) {
-            mainScope.launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 callRepository
                     .sendPhoneCallLog(textMessage = callState)
                     .collect {

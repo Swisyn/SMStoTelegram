@@ -6,6 +6,7 @@ import com.cuneytayyildiz.smstotelegram.data.SmsRepository
 import com.cuneytayyildiz.smstotelegram.data.SmsRepositoryImpl
 import com.cuneytayyildiz.smstotelegram.data.local.AppPreferences
 import com.cuneytayyildiz.smstotelegram.data.remote.TelegramApi
+import com.cuneytayyildiz.smstotelegram.di.annotations.IoDispatcher
 import com.cuneytayyildiz.smstotelegram.di.annotations.MainDispatcher
 import dagger.Module
 import dagger.Provides
@@ -28,7 +29,14 @@ class RepositoryModule {
     @MainDispatcher
     @Provides
     fun providesMainDispatcher(): CoroutineScope {
-        return CoroutineScope(Dispatchers.Main)
+        return CoroutineScope(Dispatchers.Main.immediate)
+    }
+
+
+    @IoDispatcher
+    @Provides
+    fun providesIoDispatcher(): CoroutineScope {
+        return CoroutineScope(Dispatchers.IO)
     }
 
     @Provides
